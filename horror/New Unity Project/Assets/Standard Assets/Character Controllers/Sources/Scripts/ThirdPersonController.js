@@ -12,6 +12,7 @@ public var trotMaxAnimationSpeed : float = 1.0;
 public var runMaxAnimationSpeed : float = 1.0;
 public var jumpAnimationSpeed : float = 1.15;
 public var landAnimationSpeed : float = 1.0;
+public var strafeSpeed : float = 2.0;
 
 private var _animation : Animation;
 
@@ -186,7 +187,7 @@ function UpdateSmoothedMovementDirection ()
 		
 		// Add strafing to the moveDirection vector
 		var strafeInput = Input.GetAxisRaw("Strafe");
-		strafeDirection = right * strafeInput;
+		strafeDirection = right * strafeInput * strafeSpeed;
 		
 		// Smooth the speed based on the current target direction
 		var curSmooth = speedSmoothing * Time.deltaTime;
@@ -202,6 +203,7 @@ function UpdateSmoothedMovementDirection ()
 		{
 			targetSpeed *= runSpeed;
 			_characterState = CharacterState.Running;
+			strafeDirection *= 2;
 		}
 		else if (Time.time - trotAfterSeconds > walkTimeStart)
 		{
