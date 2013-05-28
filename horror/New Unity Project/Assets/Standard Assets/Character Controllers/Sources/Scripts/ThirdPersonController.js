@@ -46,7 +46,12 @@ var rotateSpeed = 500.0;
 var trotAfterSeconds = 3.0;
 
 var canJump = true;
+var dead = false;
+var respawnLocation : Vector3;
+var respawnRotation : Quaternion;
+var deathResetDelay = 5.0;
 
+private var deadTime = 0.0;
 private var jumpRepeatTime = 0.05;
 private var jumpTimeout = 0.15;
 private var groundedTimeout = 0.25;
@@ -95,6 +100,9 @@ private var isControllable = true;
 
 function Awake ()
 {
+	respawnLocation = transform.position;
+	respawnRotation = transform.rotation;
+	
 	moveDirection = transform.TransformDirection(Vector3.forward);
 	strafeDirection = transform.TransformDirection(Vector3.right);
 	
@@ -298,7 +306,7 @@ function DidJump ()
 
 function Update() {
 	
-	if (!isControllable)
+	if ((!isControllable) || (dead))
 	{
 		// kill all inputs if not controllable.
 		Input.ResetInputAxes();
@@ -367,6 +375,13 @@ function Update() {
 	}
 	// ANIMATION sector
 	
+	// if dead update the timer and exit
+	if (dead)
+	{
+		UpdateWhenDead();
+		return;
+	}
+	
 	// Set rotation to the move direction
 	if (IsGrounded())
 	{
@@ -397,6 +412,18 @@ function Update() {
 	}
 }
 
+
+function UpdateWhenDead()
+{
+	deadTime += Time.deltaTime;
+	if (deadTime > deathResetDelay)
+	{
+		transform.position = respawnLocation;
+		transform.rotation = respawnRotation;
+		dead = false;
+		deadTime = 0.0f;
+	}
+}
 function OnControllerColliderHit (hit : ControllerColliderHit )
 {
 //	Debug.DrawRay(hit.point, hit.normal);

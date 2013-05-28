@@ -14,6 +14,7 @@ public class DoorController : MonoBehaviour {
 		player = GameObject.FindGameObjectWithTag(Tags.player);
 		playerInventory = player.GetComponent<PlayerInventory>();
 	}
+	
 	void OnMouseDown()
 	{
 		if(playerInventory.hasKey)
